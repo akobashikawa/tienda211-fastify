@@ -2,11 +2,43 @@
 
 - **Tienda 101 - Fastify** es la versión monolito
     - [akobashikawa/tienda101-fastify: Ejercicio de implementar una tienda. Fastify con BDD. Arquitectura hexagonal. Monolito.](https://github.com/akobashikawa/tienda101-fastify).
+
+```mermaid
+graph LR
+    subgraph Monolito
+        Frontend
+        Productos
+        Personas
+        Ventas
+    end
+    
+    Frontend <--> Productos
+    Frontend <--> Personas
+    Frontend <--> Ventas
+```
+
 - **Tienda 201 - Fastify** es una versión con microservicios invocados directamente
     - Cada microservicio tiene su propia base de datos
     - Ventas invoca a Productos y Personas usando métodos services
     - El frontend invoca directamente a cada microservicio directamente
     - [akobashikawa/tienda201-fastify: Ejercicio de implementar una tienda. Fastify con BDD. Arquitectura hexagonal. Microservicios directos.](https://github.com/akobashikawa/tienda201-fastify)
+
+```mermaid
+graph TD
+    
+    Frontend
+    
+    subgraph Backend
+        Productos
+        Personas
+        Ventas
+    end
+    
+    Frontend <--> Productos
+    Frontend <--> Personas
+    Frontend <--> Ventas
+```
+
 - **Tienda 301 - Fastify** es una versión con microservicios invocados a través de un gateway
     - Cada microservicio tiene su propia base de datos
     - Ventas invoca a Productos y Personas usando métodos services
