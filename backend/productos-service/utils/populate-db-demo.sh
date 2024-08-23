@@ -1,0 +1,3 @@
+curl -X POST http://localhost:3001/api/productos -H "Content-Type: application/json" -d '{"nombre": "Producto Nuevo", "precio": 15, "costo": 10, "cantidad": 10}'
+curl -X POST http://localhost:3001/api/productos -H "Content-Type: application/json" -d '{"nombre": "Producto Bonito", "precio": 12, "costo": 8, "cantidad": 10}'
+curl -X POST http://localhost:3001/api/productos -H "Content-Type: application/json" -d '{"nombre": "Producto Barato", "precio": 5, "costo": 2, "cantidad": 10}'

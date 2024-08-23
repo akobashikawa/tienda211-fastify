@@ -55,7 +55,7 @@ graph LR
 
 - **Tienda 301 - Fastify** es una versión con microservicios invocados a través de un gateway
     - Cada microservicio tiene su propia base de datos
-    - Ventas invoca a Productos y Personas usando métodos services
+    - Un service invoca a otros services por HTTP
     - El frontend invoca a un gateway y el gateway invoca a los microservicios
     - [akobashikawa/tienda301-fastify: Ejercicio de implementar una tienda. Fastify con BDD. Arquitectura hexagonal. Microservicios con Gateway.](https://github.com/akobashikawa/tienda301-fastify)
 
@@ -87,8 +87,8 @@ graph LR
 
 - **Tienda 401 - Fastify** es una versión con microservicios comunicándose a través de NATS
     - Cada microservicio tiene su propia base de datos
-    - Ventas invoca a Productos y Personas usando métodos services
     - El frontend invoca a un gateway y el gateway se comunica con los microservicios a través de NATS
+    - Un service puede invocar a otros services también por HTTP
 
 ```mermaid
 graph LR
@@ -165,4 +165,4 @@ npm run dev
 ## Frontend
 
 - Cada service tiene un frontend
-- El frontend del gateway es igual que el frontend general
+- Para facilitar la prueba, el frontend del gateway es igual que el frontend general
