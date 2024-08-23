@@ -93,7 +93,7 @@ graph LR
 ```mermaid
 graph LR
     style Frontend stroke:teal
-    style Frontend stroke:#89c
+    style NATS stroke:lime
     style Productos stroke:#89c
     style Personas stroke:#89c 
     style Ventas stroke:#89c
@@ -103,7 +103,7 @@ graph LR
     
     Frontend
     
-    NATS
+    NATS(NATS)
 
     subgraph Backend
         Gateway
@@ -112,12 +112,12 @@ graph LR
         Ventas <--> dbVentas[(DBVentas)]
     end
 
-    
-    Frontend <--> Gateway
-    Gateway <--> NATS
-    Productos <--> NATS
-    Personas <--> NATS
-    Ventas <--> NATS
+    Frontend <--> Gateway 
+    NATS <--> Gateway
+    NATS <--> Productos
+    NATS <--> Personas
+    NATS <--> Ventas
+ 
 ```
 
 ## Servicios
