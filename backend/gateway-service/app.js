@@ -13,9 +13,17 @@ const app = fastify({
 const cors = require('@fastify/cors');
 const fastifyStatic = require('@fastify/static');
 const path = require('node:path');
+// const { connect } = require('nats');
+
+// // Conectar a NATS
+// const NATS_URL = process.env.NATS_URL || 'nats://localhost:4222';
+// const nats = connect({ servers: NATS_URL });
+// app.log.info(`NATS_URL: ${NATS_URL}`);
+// app.decorate('nats', nats);
 
 // const modelsPlugin = require('./plugins/models-plugin');
 // const repositoriesPlugin = require('./plugins/repositories-plugin');
+const natsPlugin = require('./plugins/nats-plugin');
 const servicesPlugin = require('./plugins/services-plugin');
 
 const productosRouter = require('./productos/productos-router');
@@ -45,6 +53,7 @@ app.register(fastifyStatic, {
 
 // uses app.repositories
 // set app.services
+app.register(natsPlugin);
 app.register(servicesPlugin);
 
 // uses app.services
