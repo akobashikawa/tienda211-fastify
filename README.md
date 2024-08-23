@@ -16,7 +16,6 @@
     - Cada microservicio tiene su propia base de datos
     - Ventas invoca a Productos y Personas usando métodos services
     - El frontend invoca a un gateway y el gateway se comunica con los microservicios a través de NATS
-    - [akobashikawa/tienda301-fastify: Ejercicio de implementar una tienda. Fastify con BDD. Arquitectura hexagonal. Microservicios con Gateway.](https://github.com/akobashikawa/tienda301-fastify)
 
 
 ## Servicios
