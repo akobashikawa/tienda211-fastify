@@ -11,7 +11,7 @@ class VentasService {
             const response = await axios.get(`${this.url}`);;
             return response.data;
         } catch (error) {
-            return null;
+            throw error;
         }
     }
 
@@ -20,7 +20,7 @@ class VentasService {
             const response = await axios.get(`${this.url}/${id}`);;
             return response.data;
         } catch (error) {
-            return null;
+            throw error;
         }
     }
 
@@ -29,13 +29,17 @@ class VentasService {
             const response = await axios.post(`${this.url}`, data);;
             return response.data;
         } catch (error) {
-            return null;
+            throw error;
         }
     }
 
     async updateItem(id, data) {
-        const response = await axios.put(`${this.url}/${id}`, data);;
-        return response.data;
+        try {
+            const response = await axios.put(`${this.url}/${id}`, data);;
+            return response.data;
+        } catch (error) {
+            throw error;
+        }
     }
 
 }
