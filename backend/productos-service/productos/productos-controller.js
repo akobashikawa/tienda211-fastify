@@ -13,6 +13,15 @@ class ProductosController {
         }
     }
 
+    async getItemsFromNats() {
+        try {
+            const items = await this.productosService.getItems();
+            return items;
+        } catch (error) {
+            throw error;
+        }
+    }
+
     async getItemById(request, reply) {
         try {
             const id = request.params.id;
@@ -44,6 +53,15 @@ class ProductosController {
             reply.code(500).send({ error: error.message });
         }
     }
+
+    async createProductFromNats(data) {
+        try {
+          const newItem = await this.productosService.createItem(data);
+          return newItem;
+        } catch (error) {
+          throw error;
+        }
+      }
 
     async updateItem(request, reply) {
         try {

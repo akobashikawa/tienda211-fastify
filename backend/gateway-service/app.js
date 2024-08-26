@@ -65,10 +65,7 @@ app.register(personasRouter, { prefix: '/api/personas' });
 app.addHook('onReady', () => {
     // const sequelize = app.sequelize;
     // sequelize.sync();
-    app.nats.nc.subscribe('productos.create', (msg) => {
-        const data = JSON.parse(msg);
-        console.log('productos.create', data);
-    });
+    
 });
 
 app.ready()
