@@ -21,9 +21,9 @@ const path = require('node:path');
 // app.log.info(`NATS_URL: ${NATS_URL}`);
 // app.decorate('nats', nats);
 
+const natsPlugin = require('./plugins/nats-plugin');
 // const modelsPlugin = require('./plugins/models-plugin');
 // const repositoriesPlugin = require('./plugins/repositories-plugin');
-const natsPlugin = require('./plugins/nats-plugin');
 const servicesPlugin = require('./plugins/services-plugin');
 
 const productosRouter = require('./productos/productos-router');
@@ -43,6 +43,7 @@ app.register(fastifyStatic, {
     root: path.join(__dirname, 'frontend'),
 });
 
+app.register(natsPlugin);
 // set app.sequelize
 // set app.models
 // app.register(modelsPlugin);
@@ -53,7 +54,6 @@ app.register(fastifyStatic, {
 
 // uses app.repositories
 // set app.services
-app.register(natsPlugin);
 app.register(servicesPlugin);
 
 // uses app.services
@@ -61,11 +61,15 @@ app.register(productosRouter, { prefix: '/api/productos' });
 app.register(ventasRouter, { prefix: '/api/ventas' });
 app.register(personasRouter, { prefix: '/api/personas' });
 
+
 app.addHook('onReady', () => {
     // const sequelize = app.sequelize;
     // sequelize.sync();
+    app.nats.nc.subscribe('productos.create', (msg) => {
+        const data = JSON.parse(msg);
+        console.log('productos.create', data);
+    });
 });
-
 
 app.ready()
     .then(() => {

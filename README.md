@@ -166,3 +166,7 @@ npm run dev
 
 - Cada service tiene un frontend
 - Para facilitar la prueba, el frontend del gateway es igual que el frontend general
+
+## TODO
+
+- Cuando un servicio no está levantado, hay error, pero viene en blanco.
