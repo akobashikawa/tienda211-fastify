@@ -5,9 +5,9 @@ const VentasService = require('../ventas/ventas-service');
 
 async function servicesPlugin(fastify, options) {
 
-    const productosService = new ProductosService({ natsClient: fastify.natsClient });
-    const personasService = new PersonasService({ natsClient: fastify.natsClient });
-    const ventasService = new VentasService({ natsClient: fastify.natsClient });
+    const productosService = new ProductosService({ fastify });
+    const personasService = new PersonasService({ fastify });
+    const ventasService = new VentasService({ fastify });
 
     const services = {
         productosService,

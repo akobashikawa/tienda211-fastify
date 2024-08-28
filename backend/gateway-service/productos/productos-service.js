@@ -1,36 +1,14 @@
-const { StringCodec } = require('nats');
-const sc = StringCodec();
-
 class ProductosService {
 
-    constructor({ natsClient }) {
-        this.natsClient = natsClient;
+    constructor({ fastify }) {
+        this.natsClient = fastify.natsClient;
+        this.sc = fastify.natsStringCodec;
+        this.natsSingleResponse = fastify.natsSingleResponse;
     }
 
     async getItems() {
-        return new Promise((resolve, reject) => {
-            const inbox = this.natsClient.subscribe('producto.getAll.response');
-
-            // Suscripción para recibir la respuesta
-            const subscription = this.natsClient.subscribe(inbox.subject, {
-                callback: (err, msg) => {
-                    if (err) {
-                        reject(err);
-                        return;
-                    }
-                    resolve(JSON.parse(sc.decode(msg.data)));
-                },
-            });
-
-            // Publicar el mensaje en NATS
-            this.natsClient.publish('producto.getAll', sc.encode(''), { reply: inbox.subject });
-
-            // Timeout por si no se recibe respuesta
-            setTimeout(() => {
-                subscription.unsubscribe();
-                reject(new Error('Timeout waiting for response from productos-service'));
-            }, 5000); // 5 segundos de espera
-        });
+        const subject = 'producto.getAll';
+        return this.natsSingleResponse({ subject });
     }
 
     async getItemById(id) {
@@ -55,7 +33,7 @@ class ProductosService {
                         reject(err);
                         return;
                     }
-                    const response = JSON.parse(sc.decode(msg.data));
+                    const response = JSON.parse(this.sc.decode(msg.data));
                     if (response.error) {
                         reject(new Error(response.error));
                     } else {
@@ -65,7 +43,7 @@ class ProductosService {
             });
 
             // Publicar el evento para crear el producto
-            this.natsClient.publish('producto.create', sc.encode(JSON.stringify(data)), { reply: inbox.subject });
+            this.natsClient.publish('producto.create', this.sc.encode(JSON.stringify(data)), { reply: inbox.subject });
 
             // Timeout por si no se recibe respuesta
             setTimeout(() => {
