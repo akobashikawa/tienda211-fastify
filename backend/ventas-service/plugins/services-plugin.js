@@ -8,11 +8,9 @@ const PERSONAS_SERVICE_URL = process.env.PERSONAS_SERVICE_URL || 'http://localho
 
 async function servicesPlugin(fastify, options) {
 
-    const productosService = new ProductosService({ url: PRODUCTOS_SERVICE_URL });
-    fastify.log.info(`PRODUCTOS_SERVICE_URL: ${PRODUCTOS_SERVICE_URL}`);
-    const personasService = new PersonasService({ url: PERSONAS_SERVICE_URL });
-    fastify.log.info(`PERSONAS_SERVICE_URL: ${PERSONAS_SERVICE_URL}`);
-    const ventasService = new VentasService({...fastify.repositories, productosService, personasService});
+    const productosService = new ProductosService({ fastify });
+    const personasService = new PersonasService({ fastify });
+    const ventasService = new VentasService({ fastify });
 
     const services = {
         productosService,

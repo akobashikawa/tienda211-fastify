@@ -1,27 +1,19 @@
-const axios = require('axios');
-
 class PersonasService {
 
-    constructor({ url }) {
-        this.url = url;
+    constructor({ fastify }) {
+        this.natsSingleResponse = fastify.natsSingleResponse;
     }
 
     async getItemById(id) {
-        try {
-            const { data: item } = await axios.get(`${this.url}/${id}`);;
-            return item;
-        } catch (error) {
-            return null;
-        }
+        const subject = 'persona.getById';
+        const encodedData = JSON.stringify({ id });
+        return this.natsSingleResponse({ subject, data: encodedData });
     }
 
     async createItem(data) {
-        try {
-            const response = await axios.post(`${this.url}/${id}`, data);;
-            return response.data;
-        } catch (error) {
-            return null;
-        }
+        const subject = 'persona.create';
+        const encodedData = JSON.stringify(data);
+        return this.natsSingleResponse({ subject, data: encodedData });
     }
 
 }

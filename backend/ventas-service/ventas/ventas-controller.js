@@ -15,6 +15,15 @@ class VentasController {
         }
     }
 
+    async getItemsFromNats() {
+        try {
+            const items = await this.ventasService.getItems();
+            return items;
+        } catch (error) {
+            throw error;
+        }
+    }
+
     async getItemById(request, reply) {
         try {
             const id = request.params.id;
@@ -27,6 +36,15 @@ class VentasController {
         } catch (error) {
             request.log.error(error);
             reply.code(500).send({ error: error.message });
+        }
+    }
+
+    async getItemFromNats(id) {
+        try {
+            const item = await this.ventasService.getItemById(id);
+            return item;
+        } catch (error) {
+            throw error;
         }
     }
 
@@ -44,6 +62,15 @@ class VentasController {
         } catch (error) {
             request.log.error(error);
             reply.code(500).send({ error: error.message });
+        }
+    }
+
+    async createItemFromNats(data) {
+        try {
+            const newItem = await this.ventasService.createItem(data);
+            return newItem;
+        } catch (error) {
+            throw error;
         }
     }
 
@@ -75,6 +102,15 @@ class VentasController {
         } catch (error) {
             request.log.error(error);
             reply.code(500).send({ error: error.message });
+        }
+    }
+
+    async updateItemFromNats(id, data) {
+        try {
+            const newItem = await this.ventasService.updateItem(id, data);
+            return newItem;
+        } catch (error) {
+            throw error;
         }
     }
 
