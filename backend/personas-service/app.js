@@ -14,6 +14,7 @@ const cors = require('@fastify/cors');
 const fastifyStatic = require('@fastify/static');
 const path = require('node:path');
 
+const natsPlugin = require('./plugins/nats-plugin');
 const modelsPlugin = require('./plugins/models-plugin');
 const repositoriesPlugin = require('./plugins/repositories-plugin');
 const servicesPlugin = require('./plugins/services-plugin');
@@ -35,6 +36,7 @@ app.register(fastifyStatic, {
     root: path.join(__dirname, 'frontend'),
 });
 
+app.register(natsPlugin);
 // set app.sequelize
 // set app.models
 app.register(modelsPlugin);

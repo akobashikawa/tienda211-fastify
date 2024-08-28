@@ -1,45 +1,30 @@
-const axios = require('axios');
-
 class PersonasService {
 
-    constructor({ url }) {
-        this.url = url;
+    constructor({ fastify }) {
+        this.natsSingleResponse = fastify.natsSingleResponse;
     }
 
     async getItems() {
-        try {
-            const response = await axios.get(`${this.url}`);;
-            return response.data;
-        } catch (error) {
-            throw error;
-        }
+        const subject = 'persona.getAll';
+        return this.natsSingleResponse({ subject });
     }
 
     async getItemById(id) {
-        try {
-            const { data: item } = await axios.get(`${this.url}/${id}`);;
-            return item;
-        } catch (error) {
-            throw error;
-        }
+        const subject = 'persona.getById';
+        const encodedData = JSON.stringify({ id });
+        return this.natsSingleResponse({ subject, data: encodedData });
     }
 
     async createItem(data) {
-        try {
-            const response = await axios.post(`${this.url}`, data);;
-            return response.data;
-        } catch (error) {
-            throw error;
-        }
+        const subject = 'persona.create';
+        const encodedData = JSON.stringify(data);
+        return this.natsSingleResponse({ subject, data: encodedData });
     }
 
     async updateItem(id, data) {
-        try {
-            const response = await axios.put(`${this.url}/${id}`, data);;
-        return response.data;
-        } catch (error) {
-            throw error;
-        }
+        const subject = 'persona.update';
+        const encodedData = JSON.stringify({id, ...data});
+        return this.natsSingleResponse({ subject, data: encodedData });
     }
 
 }

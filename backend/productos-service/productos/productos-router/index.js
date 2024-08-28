@@ -9,7 +9,7 @@ async function productosRouter(fastify, options) {
   require('./get-by-id')(fastify, productosController);
   // fastify.post('/', (request, reply) => productosController.createItem(request, reply));
   require('./create')(fastify, productosController);
-  fastify.put('/:id', (request, reply) => productosController.updateItem(request, reply));
+  // fastify.put('/:id', (request, reply) => productosController.updateItem(request, reply));
   require('./update')(fastify, productosController);
   // fastify.delete('/:id', (request, reply) => productosController.deleteItem(request, reply));
   // require('./delete')(fastify, productosController);

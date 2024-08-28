@@ -1,8 +1,6 @@
 class ProductosService {
 
     constructor({ fastify }) {
-        this.natsClient = fastify.natsClient;
-        this.sc = fastify.natsStringCodec;
         this.natsSingleResponse = fastify.natsSingleResponse;
     }
 
