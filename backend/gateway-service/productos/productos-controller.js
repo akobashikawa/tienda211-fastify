@@ -6,7 +6,6 @@ class ProductosController {
     async getItems(request, reply) {
         try {
             const items = await this.productosService.getItems();
-            console.log('getItems', items)
             reply.send(items);
         } catch (error) {
             request.log.error(error);

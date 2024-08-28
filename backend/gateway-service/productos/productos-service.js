@@ -12,54 +12,21 @@ class ProductosService {
     }
 
     async getItemById(id) {
-        try {
-            const response = await axios.get(`${this.url}/${id}`);;
-            return response.data;
-        } catch (error) {
-            throw error;
-        }
+        const subject = 'producto.getById';
+        const encodedData = JSON.stringify({ id });
+        return this.natsSingleResponse({ subject, data: encodedData });
     }
 
     async createItem(data) {
-        return new Promise((resolve, reject) => {
-            // Crear un inbox para recibir la respuesta
-            const inbox = this.natsClient.subscribe('producto.create.response');
-
-            // Suscribirse al inbox para recibir la respuesta
-            const subscription = this.natsClient.subscribe(inbox.subject, {
-                max: 1, // Solo queremos una respuesta
-                callback: (err, msg) => {
-                    if (err) {
-                        reject(err);
-                        return;
-                    }
-                    const response = JSON.parse(this.sc.decode(msg.data));
-                    if (response.error) {
-                        reject(new Error(response.error));
-                    } else {
-                        resolve(response);
-                    }
-                }
-            });
-
-            // Publicar el evento para crear el producto
-            this.natsClient.publish('producto.create', this.sc.encode(JSON.stringify(data)), { reply: inbox.subject });
-
-            // Timeout por si no se recibe respuesta
-            setTimeout(() => {
-                subscription.unsubscribe();
-                reject(new Error('Timeout waiting for response from productos-service'));
-            }, 5000); // 5 segundos de espera
-        });
+        const subject = 'producto.create';
+        const encodedData = JSON.stringify(data);
+        return this.natsSingleResponse({ subject, data: encodedData });
     }
 
     async updateItem(id, data) {
-        try {
-            const response = await axios.put(`${this.url}/${id}`, data);;
-            return response.data;
-        } catch (error) {
-            throw error;
-        }
+        const subject = 'producto.update';
+        const encodedData = JSON.stringify({id, ...data});
+        return this.natsSingleResponse({ subject, data: encodedData });
     }
 
 }

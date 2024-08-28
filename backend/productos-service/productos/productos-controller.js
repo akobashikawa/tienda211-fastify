@@ -37,6 +37,15 @@ class ProductosController {
         }
     }
 
+    async getItemFromNats(id) {
+        try {
+            const item = await this.productosService.getItemById(id);
+            return item;
+        } catch (error) {
+            throw error;
+        }
+    }
+
     async createItem(request, reply) {
         try {
             const { nombre, precio, costo, cantidad } = request.body;
@@ -54,14 +63,14 @@ class ProductosController {
         }
     }
 
-    async createProductFromNats(data) {
+    async createItemFromNats(data) {
         try {
-          const newItem = await this.productosService.createItem(data);
-          return newItem;
+            const newItem = await this.productosService.createItem(data);
+            return newItem;
         } catch (error) {
-          throw error;
+            throw error;
         }
-      }
+    }
 
     async updateItem(request, reply) {
         try {
@@ -96,6 +105,15 @@ class ProductosController {
         } catch (error) {
             request.log.error(error);
             reply.code(500).send({ error: error.message });
+        }
+    }
+
+    async updateItemFromNats(id, data) {
+        try {
+            const newItem = await this.productosService.updateItem(id, data);
+            return newItem;
+        } catch (error) {
+            throw error;
         }
     }
 
