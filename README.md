@@ -24,6 +24,20 @@ graph TD
     Frontend <--> Ventas
 ```
 
+- GET /api/productos
+
+```mermaid
+sequenceDiagram
+    participant Cliente
+    participant Backend
+
+    Cliente->>+Backend: GET /api/productos
+
+    Backend->>Backend: productos.getAll
+    Backend->>+Cliente: productos
+
+```
+
 - **Tienda 201 - Fastify** es una versión con microservicios invocados directamente
     - Cada microservicio tiene su propia base de datos
     - Ventas invoca a Productos y Personas usando métodos services
