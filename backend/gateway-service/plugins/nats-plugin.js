@@ -8,17 +8,28 @@ async function natsPlugin(fastify, options) {
 
     fastify.decorate('natsStringCodec', natsStringCodec);
 
-    try {
-        const natsClient = await connect({ servers: NATS_URL });
-        fastify.log.info(`NATS connection to ${NATS_URL}: OK`);
-        
-        fastify.decorate('natsClient', natsClient);
-        
-    } catch (error) {
-        fastify.log.error(`NATS connection to ${NATS_URL}: ${error.message}`);
-    }
+    let natsClient = null;
+
+    const natsConnect = async (NATS_URL) => {
+        try {
+            natsClient = await connect({ servers: NATS_URL });
+            fastify.log.info(`NATS connection to ${NATS_URL}: OK`);
+            return natsClient;
+        } catch (error) {
+            fastify.log.error(`NATS connection to ${NATS_URL}: ${error.message}`);
+            return null;
+        }
+    };
+
+    natsClient = await natsConnect(NATS_URL);
+
+    fastify.decorate('natsClient', natsClient);
 
     const natsSingleResponse = async ({ subject, data = '', timeout = 5000 }) => {
+        if (!natsClient) {
+            throw new Error('NATS connection not ready');
+        }
+
         const responseSubject = `${subject}.response`;
 
         let subscription;
@@ -27,11 +38,11 @@ async function natsPlugin(fastify, options) {
             const responsePromise = new Promise((resolve, reject) => {
                 // Publicar el mensaje en NATS
                 fastify.log.info(`Publishing message to ${subject} with reply subject ${responseSubject}`);
-                fastify.natsClient.publish(subject, data, { reply: responseSubject });
+                natsClient.publish(subject, data, { reply: responseSubject });
 
                 // Suscripción para recibir la respuesta
                 fastify.log.info(`Creating subscription for ${responseSubject}`);
-                subscription = fastify.natsClient.subscribe(responseSubject, {
+                subscription = natsClient.subscribe(responseSubject, {
                     max: 1,
                     callback: (err, msg) => {
                         if (err) {
@@ -39,7 +50,7 @@ async function natsPlugin(fastify, options) {
                             reject(err);
                             return;
                         }
-                        const response = JSON.parse(fastify.natsStringCodec.decode(msg.data));
+                        const response = JSON.parse(natsStringCodec.decode(msg.data));
                         fastify.log.info(`Received message for ${responseSubject}`);
                         if (response.error) {
                             fastify.log.error(`Error response from ${responseSubject}: ${response.error}`);
@@ -58,7 +69,7 @@ async function natsPlugin(fastify, options) {
                     reject(new Error('Timeout waiting for response from productos-service'));
                 }, timeout)
             );
-            
+
             return await Promise.race([responsePromise, timeoutPromise]);
 
         } finally {
@@ -71,6 +82,7 @@ async function natsPlugin(fastify, options) {
     }
 
     fastify.decorate('natsSingleResponse', natsSingleResponse);
+
 
     fastify.addHook('onClose', (fastifyInstance, done) => {
         fastifyInstance.natsClient.close();
