@@ -6,11 +6,17 @@ const natsStringCodec = StringCodec();
 
 async function natsPlugin(fastify, options) {
 
-    const natsClient = await connect({ servers: NATS_URL });
-    fastify.log.info(`NATS_URL: ${NATS_URL}`);
-    
-    fastify.decorate('natsClient', natsClient);
     fastify.decorate('natsStringCodec', natsStringCodec);
+
+    try {
+        const natsClient = await connect({ servers: NATS_URL });
+        fastify.log.info(`NATS connection to ${NATS_URL}: OK`);
+        
+        fastify.decorate('natsClient', natsClient);
+        
+    } catch (error) {
+        fastify.log.error(`NATS connection to ${NATS_URL}: ${error.message}`);
+    }
 
     const natsSingleResponse = async ({ subject, data = '', timeout = 5000 }) => {
         const responseSubject = `${subject}.response`;
@@ -69,7 +75,7 @@ async function natsPlugin(fastify, options) {
     fastify.decorate('natsSingleResponse', natsSingleResponse);
 
     fastify.addHook('onClose', (fastifyInstance, done) => {
-        natsClient.close();
+        fastifyInstance.natsClient.close();
         fastify.log.info('NATS connection closed');
         done();
     });
