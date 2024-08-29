@@ -14,6 +14,18 @@ const cors = require('@fastify/cors');
 const fastifyStatic = require('@fastify/static');
 const path = require('node:path');
 
+app.setErrorHandler(function (error, request, reply) {
+    if (error instanceof fastify.errorCodes.FST_ERR_BAD_STATUS_CODE) {
+        // Log error
+        this.log.error(error)
+        // Send error response
+        reply.status(500).send({ ok: false })
+    } else {
+        // fastify will use parent error handler to handle this
+        reply.send(error)
+    }
+});
+
 const natsPlugin = require('./plugins/nats-plugin');
 const modelsPlugin = require('./plugins/models-plugin');
 const repositoriesPlugin = require('./plugins/repositories-plugin');
@@ -50,6 +62,12 @@ app.register(repositoriesPlugin);
 app.register(servicesPlugin);
 
 // uses app.services
+app.get('/api/hello', async (request, reply) => {
+    reply.send('Hello');
+});
+app.get('/api/force-error', async (request, reply) => {
+    throw new Error('Forced error');
+});
 // app.register(productosRouter, { prefix: '/api/productos' });
 // app.register(ventasRouter, { prefix: '/api/ventas' });
 app.register(personasRouter, { prefix: '/api/personas' });
