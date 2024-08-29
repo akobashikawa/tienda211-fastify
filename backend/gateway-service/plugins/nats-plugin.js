@@ -1,18 +1,15 @@
 const fp = require('fastify-plugin');
 const { connect, StringCodec } = require('nats');
 
-const NATS_URL = process.env.NATS_URL || 'nats://localhost:4222';
-const natsStringCodec = StringCodec();
 
 async function natsPlugin(fastify, options) {
 
-    fastify.decorate('natsStringCodec', natsStringCodec);
+    const sc = StringCodec();
 
-    let natsClient = null;
-
-    const natsConnect = async (NATS_URL) => {
+    const natsConnect = async function () {
+        const NATS_URL = process.env.NATS_URL || 'nats://localhost:4222';
         try {
-            natsClient = await connect({ servers: NATS_URL });
+            const natsClient = await connect({ servers: NATS_URL });
             fastify.log.info(`NATS connection to ${NATS_URL}: OK`);
             return natsClient;
         } catch (error) {
@@ -21,14 +18,16 @@ async function natsPlugin(fastify, options) {
         }
     };
 
-    natsClient = await natsConnect(NATS_URL);
-
-    fastify.decorate('natsClient', natsClient);
-
-    const natsSingleResponse = async ({ subject, data = '', timeout = 5000 }) => {
-        if (!natsClient) {
-            throw new Error('NATS connection not ready');
+    const getSingleResponse = async function ({ subject, data = '', timeout = 5000 }) {
+        let nc = this.nc;
+        if (!nc) {
+            this.nc = await this.connect();
+            if (!nc) {
+                throw new Error('NATS connection not ready');
+            }
+            nc = this.nc;
         }
+        const sc = this.sc;
 
         const responseSubject = `${subject}.response`;
 
@@ -38,11 +37,11 @@ async function natsPlugin(fastify, options) {
             const responsePromise = new Promise((resolve, reject) => {
                 // Publicar el mensaje en NATS
                 fastify.log.info(`Publishing message to ${subject} with reply subject ${responseSubject}`);
-                natsClient.publish(subject, data, { reply: responseSubject });
+                nc.publish(subject, data, { reply: responseSubject });
 
                 // Suscripción para recibir la respuesta
                 fastify.log.info(`Creating subscription for ${responseSubject}`);
-                subscription = natsClient.subscribe(responseSubject, {
+                subscription = nc.subscribe(responseSubject, {
                     max: 1,
                     callback: (err, msg) => {
                         if (err) {
@@ -50,7 +49,7 @@ async function natsPlugin(fastify, options) {
                             reject(err);
                             return;
                         }
-                        const response = JSON.parse(natsStringCodec.decode(msg.data));
+                        const response = JSON.parse(sc.decode(msg.data));
                         fastify.log.info(`Received message for ${responseSubject}`);
                         if (response.error) {
                             fastify.log.error(`Error response from ${responseSubject}: ${response.error}`);
@@ -74,18 +73,26 @@ async function natsPlugin(fastify, options) {
 
         } finally {
             // Log cuando se cierra la suscripción
-            if (subscription) {
-                fastify.log.info(`Unsubscribing from ${responseSubject}`);
-                subscription.unsubscribe();
-            }
+            // if (subscription) {
+            //     fastify.log.info(`Unsubscribing from ${responseSubject}`);
+            //     subscription.unsubscribe();
+            // }
         }
     }
 
-    fastify.decorate('natsSingleResponse', natsSingleResponse);
+    
+    fastify.decorate('nats', {
+        nc: null,
+        sc: sc,
+        connect: natsConnect,
+        getSingleResponse: getSingleResponse,
+    });
+    
+    fastify.nats.nc = await fastify.nats.connect();
 
 
     fastify.addHook('onClose', (fastifyInstance, done) => {
-        fastifyInstance.natsClient.close();
+        fastifyInstance.nats.nc.close();
         fastify.log.info('NATS connection closed');
         done();
     });
