@@ -25,12 +25,13 @@ async function natsPlugin(fastify, options) {
 
         try {
             const responsePromise = new Promise((resolve, reject) => {
-
-                // Log cuando se crea la suscripción
-                fastify.log.info(`Creating subscription for ${responseSubject}`);
+                // Publicar el mensaje en NATS
+                fastify.log.info(`Publishing message to ${subject} with reply subject ${responseSubject}`);
+                fastify.natsClient.publish(subject, data, { reply: responseSubject });
 
                 // Suscripción para recibir la respuesta
-                subscription = natsClient.subscribe(responseSubject, {
+                fastify.log.info(`Creating subscription for ${responseSubject}`);
+                subscription = fastify.natsClient.subscribe(responseSubject, {
                     max: 1,
                     callback: (err, msg) => {
                         if (err) {
@@ -38,7 +39,7 @@ async function natsPlugin(fastify, options) {
                             reject(err);
                             return;
                         }
-                        const response = JSON.parse(natsStringCodec.decode(msg.data));
+                        const response = JSON.parse(fastify.natsStringCodec.decode(msg.data));
                         fastify.log.info(`Received message for ${responseSubject}`);
                         if (response.error) {
                             fastify.log.error(`Error response from ${responseSubject}: ${response.error}`);
@@ -49,9 +50,6 @@ async function natsPlugin(fastify, options) {
                     },
                 });
 
-                // Publicar el mensaje en NATS
-                fastify.log.info(`Publishing message to ${subject} with reply subject ${responseSubject}`);
-                natsClient.publish(subject, data, { reply: responseSubject });
             });
 
             const timeoutPromise = new Promise((_, reject) =>
