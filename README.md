@@ -174,8 +174,10 @@ sequenceDiagram
     participant NATS
     participant MS_Productos as Productos
 
+    MS_Productos-->>+NATS: Subscribe productos.getAll
     Cliente->>+Gateway: GET /api/productos
     Gateway->>+NATS: Publish productos.getAll
+    Gateway-->>+NATS: Subscribe productos.getAll.response
     NATS->>+MS_Productos: Forward productos.getAll
 
     MS_Productos->>MS_Productos: getAll
