@@ -53,6 +53,20 @@ graph LR
     Frontend <--> Ventas
 ```
 
+- GET /api/productos
+
+```mermaid
+sequenceDiagram
+    participant Cliente
+    participant MS_Productos as Productos
+
+    Cliente->>+MS_Productos: GET /api/productos
+
+    MS_Productos->>MS_Productos: getAll
+    MS_Productos->>+Cliente: productos
+
+```
+
 - **Tienda 301 - Fastify** es una versión con microservicios invocados a través de un gateway
     - Cada microservicio tiene su propia base de datos
     - Un service invoca a otros services por HTTP
@@ -83,6 +97,23 @@ graph LR
     Gateway <--> Productos
     Gateway <--> Personas
     Gateway <--> Ventas
+```
+
+- GET /api/productos
+
+```mermaid
+sequenceDiagram
+    participant Cliente
+    participant Gateway
+    participant MS_Productos as Productos
+
+    Cliente->>+Gateway: GET /api/productos
+    Gateway->>+MS_Productos: GET /api/productos
+
+    MS_Productos->>MS_Productos: getAll
+    MS_Productos->>+Gateway: productos
+    Gateway->>+Cliente: productos
+
 ```
 
 - **Tienda 401 - Fastify** es una versión con microservicios comunicándose a través de NATS
@@ -118,6 +149,27 @@ graph LR
     NATS <--> Personas
     NATS <--> Ventas
  
+```
+
+- GET /api/productos
+
+```mermaid
+sequenceDiagram
+    participant Cliente
+    participant Gateway
+    participant NATS
+    participant MS_Productos as Productos
+
+    Cliente->>+Gateway: GET /api/productos
+    Gateway->>+NATS: Publish productos.getAll
+    NATS->>+MS_Productos: Forward productos.getAll
+
+    MS_Productos->>MS_Productos: getAll
+    MS_Productos->>+NATS: Publish productos.getAll.response
+
+    NATS->>+Gateway: Forward productos.getAll.response
+    Gateway->>+Cliente: productos
+
 ```
 
 ## Servicios
