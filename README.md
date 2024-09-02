@@ -92,7 +92,7 @@ sequenceDiagram
 
     Cliente->>+MS_Productos: GET /api/productos
 
-    MS_Productos->>MS_Productos: getAll
+    MS_Productos->>MS_Productos: getItems
     MS_Productos->>+Cliente: productos
 
 ```
@@ -161,9 +161,32 @@ sequenceDiagram
     Cliente->>+Gateway: GET /api/productos
     Gateway->>+MS_Productos: GET /api/productos
 
-    MS_Productos->>MS_Productos: getAll
+    MS_Productos->>MS_Productos: getItems
     MS_Productos->>+Gateway: productos
     Gateway->>+Cliente: productos
+
+```
+
+- GET /api/ventas
+
+```mermaid
+sequenceDiagram
+    participant Cliente
+    participant Gateway
+    participant MS_Ventas as Ventas
+    participant MS_Productos as Productos
+    participant MS_Personas as Personas
+
+    Cliente->>+Gateway: GET /api/ventas
+    Gateway->>+MS_Ventas: GET /api/ventas
+
+    MS_Ventas->>MS_Ventas: getItems
+    MS_Ventas->>MS_Productos: GET /api/productos/venta.producto_id
+    MS_Productos->>MS_Ventas: producto
+    MS_Ventas->>MS_Personas: GET /api/personas/venta.persona_id
+    MS_Personas->>MS_Ventas: persona
+    MS_Ventas->>+Gateway: ventas
+    Gateway->>+Cliente: ventas
 
 ```
 
