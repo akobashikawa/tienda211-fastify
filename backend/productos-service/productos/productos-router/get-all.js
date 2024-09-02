@@ -4,7 +4,7 @@ module.exports = function(fastify, productosController) {
     const nc = fastify.nats.nc;
     const sc = fastify.nats.sc;
     
-    // Suscribirse al evento 'producto.getAll'
+    // Suscribirse al evento
     const subscription = nc.subscribe('producto.getAll');
     (async () => {
       for await (const msg of subscription) {
