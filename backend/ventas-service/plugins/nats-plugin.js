@@ -51,7 +51,7 @@ async function natsPlugin(fastify, options) {
                         }
                         const response = JSON.parse(sc.decode(msg.data));
                         fastify.log.info(`Received message for ${responseSubject}`);
-                        if (response.error) {
+                        if (response && response.error) {
                             fastify.log.error(`Error response from ${responseSubject}: ${response.error}`);
                             reject(new Error(response.error));
                         } else {
