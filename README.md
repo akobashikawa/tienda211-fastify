@@ -249,6 +249,49 @@ sequenceDiagram
 
 ```
 
+- GET /api/ventas
+
+```mermaid
+sequenceDiagram
+    participant Cliente
+    participant Gateway
+    participant NATS
+    participant MS_Ventas as Ventas
+    participant MS_Productos as Productos
+    participant MS_Personas as Personas
+
+    MS_Ventas-->>+NATS: Subscribe venta.getAll
+    MS_Productos-->>+NATS: Subscribe producto.getAll
+    MS_Personas-->>+NATS: Subscribe persona.getAll
+
+    Cliente->>+Gateway: GET /api/ventas
+    Gateway->>+NATS: Publish venta.getAll
+    Gateway-->>+NATS: Subscribe venta.getAll.response
+    NATS->>+MS_Ventas: Forward venta.getAll
+
+    MS_Ventas->>MS_Ventas: getItems
+
+    MS_Ventas->>+NATS: Publish producto.getById
+    MS_Ventas-->>+NATS: Subscribe producto.getById.response
+    NATS->>+MS_Productos: Forward producto.getById
+    MS_Productos->>MS_Productos: getItemById
+    MS_Productos->>+NATS: Publish producto.getById.response
+    NATS->>+MS_Ventas: Forward producto.getById.response
+
+    MS_Ventas->>+NATS: Publish persona.getById
+    MS_Ventas-->>+NATS: Subscribe persona.getById.response
+    NATS->>+MS_Personas: Forward persona.getById
+    MS_Personas->>MS_Personas: getItemById
+    MS_Personas->>+NATS: Publish persona.getById.response
+    NATS->>+MS_Ventas: Forward persona.getById.response
+
+    MS_Ventas->>+NATS: Publish ventas.getAll.response
+
+    NATS->>+Gateway: Forward ventas.getAll.response
+    Gateway->>+Cliente: ventas
+
+```
+
 ## Servicios
 
 - **Gateway Service**
