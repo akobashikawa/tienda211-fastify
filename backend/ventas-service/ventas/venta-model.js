@@ -30,15 +30,23 @@ class Venta extends Model {
                 allowNull: false,
                 defaultValue: DataTypes.NOW
             },
-            ganancia: {
-                type: DataTypes.DECIMAL(10, 2),
-                allowNull: false
-            },
         }, {
             sequelize,
             modelName: 'Venta',
             tableName: 'Ventas',
         });
+    }
+
+    toJSON() {
+        const values = super.toJSON();
+        return {
+            id: values.id,
+            producto: values.Producto,
+            persona: values.Persona,
+            precio: values.precio,
+            cantidad: values.cantidad,
+            fecha: values.fecha
+        };
     }
 }
 

@@ -29,10 +29,6 @@ class VentasService {
         return venta;
     }
 
-    calcGanancia({costo, precio, cantidad}) {
-        return cantidad * (precio - costo);
-    }
-
     async createItem(data) {
         const persona = await this.personasService.getItemById(data.persona_id);
 
@@ -52,8 +48,6 @@ class VentasService {
         if (producto.cantidad - data.cantidad < 0) {
             throw new Error('No hay suficientes existencias');
         }
-
-        data.ganancia = this.calcGanancia({costo: producto.costo, precio: data.precio, cantidad: data.cantidad});
 
         const nuevaCantidad = producto.cantidad - data.cantidad;
         await this.productosService.updateItem(producto.id, {cantidad: nuevaCantidad});
@@ -86,8 +80,6 @@ class VentasService {
         if (producto.cantidad - data.cantidad < 0) {
             throw new Error('No hay suficientes existencias');
         }
-
-        data.ganancia = this.calcGanancia({costo: producto.costo, precio: data.precio, cantidad: data.cantidad});
 
         const diferencia = data.cantidad - venta.cantidad;
         const nuevaCantidad = producto.cantidad - diferencia;
