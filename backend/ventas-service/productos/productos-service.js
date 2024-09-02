@@ -1,25 +1,34 @@
 class ProductosService {
 
     constructor({ fastify }) {
-        this.natsSingleResponse = fastify.natsSingleResponse;
+        this.nats = fastify.nats;
+    }
+
+    async getItems() {
+        return this.nats.getSingleResponse({ 
+            subject: 'producto.getAll'
+        });
     }
 
     async getItemById(id) {
-        const subject = 'producto.getById';
-        const encodedData = JSON.stringify({ id });
-        return this.natsSingleResponse({ subject, data: encodedData });
+        return this.nats.getSingleResponse({ 
+            subject: 'producto.getById', 
+            data: JSON.stringify({ id }),
+        });
     }
 
     async createItem(data) {
-        const subject = 'producto.create';
-        const encodedData = JSON.stringify(data);
-        return this.natsSingleResponse({ subject, data: encodedData });
+        return this.nats.getSingleResponse({ 
+            subject: 'producto.create', 
+            data: JSON.stringify(data),
+        });
     }
 
     async updateItem(id, data) {
-        const subject = 'producto.update';
-        const encodedData = JSON.stringify({id, ...data});
-        return this.natsSingleResponse({ subject, data: encodedData });
+        return this.nats.getSingleResponse({ 
+            subject: 'producto.update', 
+            data: JSON.stringify({id, ...data}),
+        });
     }
 
 }

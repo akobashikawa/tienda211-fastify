@@ -57,14 +57,14 @@ class VentasController {
                 return;
             }
 
-            const { persona_id, producto_id, precio, cantidad } = request.body;
+            const updateData = Object.assign({ producto_id: venta.producto_id, persona_id: venta.persona_id, precio: venta.precio, cantidad: venta.cantidad }, request.body );
 
-            if (!persona_id, !producto_id || precio < 0) {
+            if (!updateData.persona_id, !updateData.producto_id || updateData.precio < 0) {
                 reply.code(400).send({ error: 'Datos inválidos' });
                 return;
             }
 
-            const updatedItem = await this.ventasService.updateItem(id, { persona_id, producto_id, precio, cantidad });
+            const updatedItem = await this.ventasService.updateItem(id, updateData);
             if (updatedItem) {
                 reply.send(updatedItem);
                 return;

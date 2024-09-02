@@ -19,7 +19,7 @@ module.exports = function (fastify, productosController) {
         if (data.precio) updateData.precio = data.precio;
         if (data.cantidad) updateData.cantidad = data.cantidad;
 
-        // Llamar al método para crear el producto
+        // Llamar al método para actualizar el producto
         const updatedItem = await productosController.updateItemFromNats(id, updateData);
 
         // Publicar la respuesta en NATS usando el reply-to del mensaje

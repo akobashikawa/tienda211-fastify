@@ -107,8 +107,8 @@ class VentasController {
 
     async updateItemFromNats(id, data) {
         try {
-            const newItem = await this.ventasService.updateItem(id, data);
-            return newItem;
+            const updatedItem = await this.ventasService.updateItem(id, data);
+            return updatedItem;
         } catch (error) {
             throw error;
         }

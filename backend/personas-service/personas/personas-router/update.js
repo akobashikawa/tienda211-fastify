@@ -4,7 +4,7 @@ module.exports = function (fastify, personasController) {
   const nc = fastify.nats.nc;
   const sc = fastify.nats.sc;
 
-  // Suscribirse al evento 'persona.createItem'
+  // Suscribirse al evento
   const subscription = nc.subscribe('persona.update');
   (async () => {
     for await (const msg of subscription) {
@@ -16,7 +16,7 @@ module.exports = function (fastify, personasController) {
         const updateData = {};
         if (data.nombre) updateData.nombre = data.nombre;
 
-        // Llamar al método para crear el persona
+        // Llamar al método para actualizar la persona
         const updatedItem = await personasController.updateItemFromNats(id, updateData);
 
         // Publicar la respuesta en NATS usando el reply-to del mensaje

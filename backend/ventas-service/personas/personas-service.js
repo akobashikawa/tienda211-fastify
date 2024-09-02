@@ -1,19 +1,34 @@
 class PersonasService {
 
     constructor({ fastify }) {
-        this.natsSingleResponse = fastify.natsSingleResponse;
+        this.nats = fastify.nats;
     }
 
-    async getItemById(id) {
-        const subject = 'persona.getById';
-        const encodedData = JSON.stringify({ id });
-        return this.natsSingleResponse({ subject, data: encodedData });
+    async getItems() {
+        return this.nats.getSingleResponse({ 
+            subject: 'persona.getAll'
+        });
+    }
+
+    async getItemById(id) {console.log('ms ventas, personas-service, getItemById', id)
+        return this.nats.getSingleResponse({ 
+            subject: 'persona.getById', 
+            data: JSON.stringify({ id }),
+        });
     }
 
     async createItem(data) {
-        const subject = 'persona.create';
-        const encodedData = JSON.stringify(data);
-        return this.natsSingleResponse({ subject, data: encodedData });
+        return this.nats.getSingleResponse({ 
+            subject: 'persona.create', 
+            data: JSON.stringify(data),
+        });
+    }
+
+    async updateItem(id, data) {
+        return this.nats.getSingleResponse({ 
+            subject: 'persona.update', 
+            data: JSON.stringify({id, ...data}),
+        });
     }
 
 }
