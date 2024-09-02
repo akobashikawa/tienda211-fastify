@@ -237,4 +237,5 @@ npm run dev
 
 ## TODO
 
-- Cuando un servicio no está levantado, hay error, pero viene en blanco.
+- Revisar validaciones. Parece que se estuvieran duplicando.
+- Revisar arquitectura. La parte donde el controlador se vuelve NATS.
