@@ -37,7 +37,7 @@ class ProductosController {
         }
     }
 
-    async getItemFromNats(id) {
+    async getItemByIdFromNats(id) {
         try {
             const item = await this.productosService.getItemById(id);
             return item;

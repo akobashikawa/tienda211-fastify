@@ -12,8 +12,8 @@ async function productosRouter(fastify, options) {
   fastify.post('/', (request, reply) => productosController.createItem(request, reply));
   require('./create')(fastify, productosController);
 
-  // fastify.put('/:id', (request, reply) => productosController.updateItem(request, reply));
-  // require('./update')(fastify, productosController);
+  fastify.put('/:id', (request, reply) => productosController.updateItem(request, reply));
+  require('./update')(fastify, productosController);
 
   // fastify.delete('/:id', (request, reply) => productosController.deleteItem(request, reply));
   // require('./delete')(fastify, productosController);

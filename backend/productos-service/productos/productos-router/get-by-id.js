@@ -11,8 +11,8 @@ module.exports = function (fastify, productosController) {
             console.log('producto.getById');
             try {
                 const { id } = JSON.parse(sc.decode(msg.data));
-                const items = await productosController.getItemFromNats(id);
-                nc.publish(msg.reply, sc.encode(JSON.stringify(items)));
+                const item = await productosController.getItemByIdFromNats(id);
+                nc.publish(msg.reply, sc.encode(JSON.stringify(item)));
             } catch (error) {
                 nc.publish(msg.reply, sc.encode(JSON.stringify({ error: error.message })));
             }
