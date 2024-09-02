@@ -20,7 +20,7 @@ class ProductosService {
     async createItem(data) {
         return this.nats.getSingleResponse({ 
             subject: 'producto.create', 
-            data: SON.stringify(data),
+            data: JSON.stringify(data),
         });
     }
 

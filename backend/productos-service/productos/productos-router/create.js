@@ -1,11 +1,11 @@
 module.exports = function (fastify, productosController) {
 
   // Suscripción a mensajes NATS
-  const natsClient = fastify.natsClient;
-  const sc = fastify.natsStringCodec;
+  const nc = fastify.nats.nc;
+  const sc = fastify.nats.sc;
 
   // Suscribirse al evento 'producto.createItem'
-  const subscription = natsClient.subscribe('producto.create');
+  const subscription = nc.subscribe('producto.create');
   (async () => {
     for await (const msg of subscription) {
       console.log('producto.create');
@@ -17,9 +17,9 @@ module.exports = function (fastify, productosController) {
         const newItem = await productosController.createItemFromNats(data);
 
         // Publicar la respuesta en NATS usando el reply-to del mensaje
-        natsClient.publish(msg.reply, sc.encode(JSON.stringify(newItem)));
+        nc.publish(msg.reply, sc.encode(JSON.stringify(newItem)));
       } catch (error) {
-        natsClient.publish(msg.reply, sc.encode(JSON.stringify({ error: error.message })));
+        nc.publish(msg.reply, sc.encode(JSON.stringify({ error: error.message })));
       }
     }
   })();
