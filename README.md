@@ -1,7 +1,8 @@
 # Tienda 401 - Fastify
 
-- **Tienda 101 - Fastify** es la versión monolito
-    - [akobashikawa/tienda101-fastify: Ejercicio de implementar una tienda. Fastify con BDD. Arquitectura hexagonal. Monolito.](https://github.com/akobashikawa/tienda101-fastify).
+## **Tienda 101 - Fastify**
+- Es la versión monolito
+- [akobashikawa/tienda101-fastify: Ejercicio de implementar una tienda. Fastify con BDD. Arquitectura hexagonal. Monolito.](https://github.com/akobashikawa/tienda101-fastify).
 
 ```mermaid
 graph TD
@@ -52,11 +53,12 @@ sequenceDiagram
 
 ```
 
-- **Tienda 201 - Fastify** es una versión con microservicios invocados directamente
-    - Cada microservicio tiene su propia base de datos
-    - Ventas invoca a Productos y Personas usando métodos services
-    - El frontend invoca directamente a cada microservicio directamente
-    - [akobashikawa/tienda201-fastify: Ejercicio de implementar una tienda. Fastify con BDD. Arquitectura hexagonal. Microservicios directos.](https://github.com/akobashikawa/tienda201-fastify)
+## **Tienda 201 - Fastify**
+- Es una versión con microservicios invocados directamente
+- Cada microservicio tiene su propia base de datos
+- Ventas invoca a Productos y Personas usando métodos services
+- El frontend invoca directamente a cada microservicio directamente
+- [akobashikawa/tienda201-fastify: Ejercicio de implementar una tienda. Fastify con BDD. Arquitectura hexagonal. Microservicios directos.](https://github.com/akobashikawa/tienda201-fastify)
 
 ```mermaid
 graph LR
@@ -115,11 +117,12 @@ sequenceDiagram
 
 ```
 
-- **Tienda 301 - Fastify** es una versión con microservicios invocados a través de un gateway
-    - Cada microservicio tiene su propia base de datos
-    - Un service invoca a otros services por HTTP
-    - El frontend invoca a un gateway y el gateway invoca a los microservicios
-    - [akobashikawa/tienda301-fastify: Ejercicio de implementar una tienda. Fastify con BDD. Arquitectura hexagonal. Microservicios con Gateway.](https://github.com/akobashikawa/tienda301-fastify)
+## **Tienda 301 - Fastify**
+- Es una versión con microservicios invocados a través de un gateway
+- Cada microservicio tiene su propia base de datos
+- Un service invoca a otros services por HTTP
+- El frontend invoca a un gateway y el gateway invoca a los microservicios
+- [akobashikawa/tienda301-fastify: Ejercicio de implementar una tienda. Fastify con BDD. Arquitectura hexagonal. Microservicios con Gateway.](https://github.com/akobashikawa/tienda301-fastify)
 
 ```mermaid
 graph LR
@@ -164,10 +167,11 @@ sequenceDiagram
 
 ```
 
-- **Tienda 401 - Fastify** es una versión con microservicios comunicándose a través de NATS
-    - Cada microservicio tiene su propia base de datos
-    - El frontend invoca a un gateway y el gateway se comunica con los microservicios a través de NATS
-    - Un service puede invocar a otros services también por HTTP
+## **Tienda 401 - Fastify**
+- Es una versión con microservicios comunicándose a través de NATS
+- Cada microservicio tiene su propia base de datos
+- El frontend invoca a un gateway y el gateway se comunica con los microservicios a través de NATS
+- Un service puede invocar a otros services también por HTTP
 
 ```mermaid
 graph LR
