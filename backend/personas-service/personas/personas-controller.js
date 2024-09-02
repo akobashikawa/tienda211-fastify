@@ -37,7 +37,7 @@ class PersonasController {
         }
     }
 
-    async getItemFromNats(id) {
+    async getItemByIdFromNats(id) {
         try {
             const item = await this.personasService.getItemById(id);
             return item;

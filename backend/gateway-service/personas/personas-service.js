@@ -1,30 +1,34 @@
 class PersonasService {
 
     constructor({ fastify }) {
-        this.natsSingleResponse = fastify.natsSingleResponse;
+        this.nats = fastify.nats;
     }
 
     async getItems() {
-        const subject = 'persona.getAll';
-        return this.natsSingleResponse({ subject });
+        return this.nats.getSingleResponse({ 
+            subject: 'persona.getAll'
+        });
     }
 
     async getItemById(id) {
-        const subject = 'persona.getById';
-        const encodedData = JSON.stringify({ id });
-        return this.natsSingleResponse({ subject, data: encodedData });
+        return this.nats.getSingleResponse({ 
+            subject: 'persona.getById', 
+            data: JSON.stringify({ id }),
+        });
     }
 
     async createItem(data) {
-        const subject = 'persona.create';
-        const encodedData = JSON.stringify(data);
-        return this.natsSingleResponse({ subject, data: encodedData });
+        return this.nats.getSingleResponse({ 
+            subject: 'persona.create', 
+            data: JSON.stringify(data),
+        });
     }
 
     async updateItem(id, data) {
-        const subject = 'persona.update';
-        const encodedData = JSON.stringify({id, ...data});
-        return this.natsSingleResponse({ subject, data: encodedData });
+        return this.nats.getSingleResponse({ 
+            subject: 'persona.update', 
+            data: JSON.stringify({id, ...data}),
+        });
     }
 
 }
