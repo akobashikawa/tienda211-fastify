@@ -1,7 +1,8 @@
 const ProductosController = require('../productos-controller');
 
 async function productosRouter(fastify, options) {
-  const productosController = new ProductosController(fastify.services);
+  const productosController = new ProductosController(fastify.services);// provee los metodos http para usar aca
+  // IDEA: const productosNATSController = new ProductosNATSController(fastify.services);// provee los metodos nats para usar aca... quizas deberia ir dentro de productosNATSRouter
 
   fastify.get('/', (request, reply) => productosController.getItems(request, reply));
   require('./get-all')(fastify, productosController);
@@ -17,6 +18,8 @@ async function productosRouter(fastify, options) {
 
   // fastify.delete('/:id', (request, reply) => productosController.deleteItem(request, reply));
   // require('./delete')(fastify, productosController);
+
+  require('./producto-verify')(fastify, productosController);
 
 }
 

@@ -17,6 +17,8 @@ async function personasRouter(fastify, options) {
   
   // fastify.delete('/:id', (request, reply) => personasController.deleteItem(request, reply));
   // require('./delete')(fastify, personasController);
+
+  require('./persona-verify')(fastify, personasController);
 }
 
 module.exports = personasRouter;
