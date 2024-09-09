@@ -290,7 +290,12 @@ const App = {
             </footer>
 
         </form>
-    </dialog>`,
+    </dialog>
+
+    <footer>
+        <em><a href="https://github.com/akobashikawa/tienda401-fastify" target="_blank">Tienda 401 - Fastify</a></em>
+    </footer>
+    `,
 
     setup() {
 
@@ -457,6 +462,8 @@ const App = {
         const getVenta = async (id) => {
             const { data } = await axios.get(`${VENTAS_SERVICE_URL}/${id}`);
             venta.value = data;
+            venta.value.producto_id = venta.value.producto.id;
+            venta.value.persona_id = venta.value.persona.id;
         };
 
         // INGRESAR VENTA
