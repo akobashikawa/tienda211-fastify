@@ -1,34 +1,61 @@
+const axios = require('axios');
+
 class VentasService {
 
-    constructor({ fastify }) {
+    constructor({ fastify, url }) {
         this.nats = fastify.nats;
+        this.url = url;
     }
 
     async getItems() {
-        return this.nats.getSingleResponse({ 
-            subject: 'venta.getAll'
-        });
+        try {
+            const response = await axios.get(`${this.url}`);;
+            return response.data;
+        } catch (error) {
+            return null;
+        }
+        // return this.nats.getSingleResponse({ 
+        //     subject: 'venta.getAll'
+        // });
     }
 
     async getItemById(id) {
-        return this.nats.getSingleResponse({ 
-            subject: 'venta.getById', 
-            data: JSON.stringify({ id }),
-        });
+        try {
+            const response = await axios.get(`${this.url}/${id}`);;
+            return response.data;
+        } catch (error) {
+            return null;
+        }
+        // return this.nats.getSingleResponse({ 
+        //     subject: 'venta.getById', 
+        //     data: JSON.stringify({ id }),
+        // });
     }
 
-    async createItem(data) {
-        return this.nats.getSingleResponse({ 
-            subject: 'venta.create', 
-            data: JSON.stringify(data),
-        });
+    async createItem(data) {console.log(data)
+        try {
+            const response = await axios.post(`${this.url}`, data);;
+            return response.data;
+        } catch (error) {
+            return null;
+        }
+        // return this.nats.getSingleResponse({ 
+        //     subject: 'venta.create', 
+        //     data: JSON.stringify(data),
+        // });
     }
 
     async updateItem(id, data) {
-        return this.nats.getSingleResponse({ 
-            subject: 'venta.update', 
-            data: JSON.stringify({id, ...data}),
-        });
+        try {
+            const response = await axios.put(`${this.url}/${id}`, data);;
+            return response.data;
+        } catch (error) {
+            return null;
+        }
+        // return this.nats.getSingleResponse({ 
+        //     subject: 'venta.update', 
+        //     data: JSON.stringify({id, ...data}),
+        // });
     }
 
 }

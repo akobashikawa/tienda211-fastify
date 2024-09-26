@@ -30,15 +30,37 @@ class VentasService {
     }
 
     async createItem(data) {
-        const personaResponse = await this.requestPerson(data.persona_id);
-        if (!personaResponse || personaResponse.error) {
+        const persona = await this.personasService.getItemById(data.persona_id);
+
+        if (!persona) {
             throw new Error('Persona no encontrada');
         }
 
-        const productoResponse = await this.requestProduct(data.producto_id, data.cantidad);
-        if (!productoResponse || productoResponse.error) {
-            throw new Error(productoResponse.error || 'Producto no encontrado');
+        const producto = await this.productosService.getItemById(data.producto_id);
+
+        if (!producto) {
+            throw new Error('Producto no encontrado');
         }
+
+        if (producto.cantidad < 0) {
+            throw new Error('No hay suficientes existencias');
+        }
+        if (producto.cantidad - data.cantidad < 0) {
+            throw new Error('No hay suficientes existencias');
+        }
+
+        const nuevaCantidad = producto.cantidad - data.cantidad;
+        await this.productosService.updateItem(producto.id, {cantidad: nuevaCantidad});
+
+        // const personaResponse = await this.requestPerson(data.persona_id);
+        // if (!personaResponse || personaResponse.error) {
+        //     throw new Error('Persona no encontrada');
+        // }
+
+        // const productoResponse = await this.requestProduct(data.producto_id, data.cantidad);
+        // if (!productoResponse || productoResponse.error) {
+        //     throw new Error(productoResponse.error || 'Producto no encontrado');
+        // }
 
         // Aquí ya sabemos que la persona existe y hay suficiente stock, por lo que podemos crear la venta.
         return this.ventasRepository.createItem(data);
@@ -82,22 +104,22 @@ class VentasService {
     }
 
     // Solicitar verificación de persona a través de NATS
-    async requestPerson(persona_id) {
-        return await this.getSingleResponse({
-            subject: 'persona.verify',
-            data: JSON.stringify({ persona_id }),
-            timeout: 5000 // Timeout de 5 segundos
-        });
-    }
+    // async requestPerson(persona_id) {
+    //     return await this.getSingleResponse({
+    //         subject: 'persona.verify',
+    //         data: JSON.stringify({ persona_id }),
+    //         timeout: 5000 // Timeout de 5 segundos
+    //     });
+    // }
 
     // Solicitar verificación de producto y stock a través de NATS
-    async requestProduct(producto_id, cantidad) {
-        return await this.getSingleResponse({
-            subject: 'producto.verify',
-            data: JSON.stringify({ producto_id, cantidad }),
-            timeout: 5000 // Timeout de 5 segundos
-        });
-    }
+    // async requestProduct(producto_id, cantidad) {
+    //     return await this.getSingleResponse({
+    //         subject: 'producto.verify',
+    //         data: JSON.stringify({ producto_id, cantidad }),
+    //         timeout: 5000 // Timeout de 5 segundos
+    //     });
+    // }
 
 }
 
