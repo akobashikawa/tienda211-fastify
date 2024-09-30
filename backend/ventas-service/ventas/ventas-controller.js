@@ -8,6 +8,7 @@ class VentasController {
     async getItems(request, reply) {
         try {
             const items = await this.ventasService.getItems();
+            console.log(items)
             reply.send(items);
         } catch (error) {
             request.log.error(error);

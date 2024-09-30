@@ -31,7 +31,8 @@ class Producto extends Model {
         }, {
             sequelize,
             modelName: 'Producto',
-            tableName: 'Productos',
+            tableName: 'productos',
+            timestamps: false,
         });
     }
 }

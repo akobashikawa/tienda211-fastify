@@ -7,7 +7,7 @@ const VENTAS_SERVICE_URL = `http://localhost:3000/api/ventas`;
 
 const App = {
     template: `
-    <h1>Tienda 401</h1>
+    <h1>Tienda 211</h1>
     <div class="flash danger" v-if="errorMessage">{{ errorMessage }}</div>
 
     <h2>Productos</h2>
@@ -293,7 +293,7 @@ const App = {
     </dialog>
 
     <footer>
-        <em><a href="https://github.com/akobashikawa/tienda401-fastify" target="_blank">Tienda 401 - Fastify</a></em>
+        <em><a href="https://github.com/akobashikawa/tienda211-fastify" target="_blank">Tienda 211 - Fastify</a></em>
     </footer>
     `,
 

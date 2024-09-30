@@ -25,7 +25,7 @@ class Venta extends Model {
                 allowNull: false,
                 defaultValue: 0
             },
-            fecha: {
+            fecha_hora: {
                 type: DataTypes.DATE,
                 allowNull: false,
                 defaultValue: DataTypes.NOW
@@ -33,7 +33,8 @@ class Venta extends Model {
         }, {
             sequelize,
             modelName: 'Venta',
-            tableName: 'Ventas',
+            tableName: 'ventas',
+            timestamps: false,
         });
     }
 

@@ -1,4 +1,4 @@
-# Tienda 401 - Fastify
+# Tienda 211 - Fastify
 
 ## **Tienda 101 - Fastify**
 - Es la versión monolito
@@ -190,7 +190,7 @@ sequenceDiagram
 
 ```
 
-## **Tienda 401 - Fastify**
+## **Tienda 211 - Fastify**
 - Es una versión con microservicios comunicándose a través de NATS
 - Cada microservicio tiene su propia base de datos
 - El frontend invoca a un gateway y el gateway se comunica con los microservicios a través de NATS

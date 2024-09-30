@@ -16,7 +16,8 @@ class Persona extends Model {
         }, {
             sequelize,
             modelName: 'Persona',
-            tableName: 'Personas',
+            tableName: 'personas',
+            timestamps: false,
         });
     }
 }
