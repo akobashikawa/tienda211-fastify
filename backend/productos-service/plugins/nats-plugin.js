@@ -100,9 +100,9 @@ async function natsPlugin(fastify, options) {
                     fastify.log.error(`Error in subscription to ${subject}: ${err.message}`);
                     return;
                 }
-                const message = sc.decode(msg.data);
-                fastify.log.info(`Received message from ${subject}`);
-                handler(message); // Ejecutar el handler proporcionado por el usuario
+                const payload = JSON.parse(sc.decode(msg.data));
+                fastify.log.info(`Received payload from ${subject}`);
+                handler(payload); // Ejecutar el handler proporcionado por el usuario
             },
         });
 
