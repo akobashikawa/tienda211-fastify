@@ -1,9 +1,10 @@
 class VentasService {
 
-    constructor({ ventasRepository, productosService, personasService }) {
+    constructor({ fastify, ventasRepository, productosService, personasService }) {
         this.ventasRepository = ventasRepository;
         this.productosService = productosService;
         this.personasService = personasService;
+        this.nats = fastify.nats; 
     }
 
     ping() {
@@ -42,34 +43,24 @@ class VentasService {
             throw new Error('Producto no encontrado');
         }
 
-        if (producto.cantidad < 0) {
-            throw new Error('No hay suficientes existencias');
-        }
-        if (producto.cantidad - data.cantidad < 0) {
+        if (producto.cantidad < data.cantidad) {
             throw new Error('No hay suficientes existencias');
         }
 
-        const nuevaCantidad = producto.cantidad - data.cantidad;
-        await this.productosService.updateItem(producto.id, {cantidad: nuevaCantidad});
+        // Crear la venta
+        const newVenta = await this.ventasRepository.createItem(data);
 
-        // const personaResponse = await this.requestPerson(data.persona_id);
-        // if (!personaResponse || personaResponse.error) {
-        //     throw new Error('Persona no encontrada');
-        // }
+        // Publicar el evento de creación de venta en NATS
+        const payload = { ventaId: newVenta.id, productoId: data.producto_id, cantidad: data.cantidad, precio: data.precio };
+        this.nats.publish('venta.created', JSON.stringify(payload));
 
-        // const productoResponse = await this.requestProduct(data.producto_id, data.cantidad);
-        // if (!productoResponse || productoResponse.error) {
-        //     throw new Error(productoResponse.error || 'Producto no encontrado');
-        // }
-
-        // Aquí ya sabemos que la persona existe y hay suficiente stock, por lo que podemos crear la venta.
-        return this.ventasRepository.createItem(data);
+        return newVenta;
     }
 
     async updateItem(id, data) {
-        const venta = await this.getItemById(id);
+        const found = await this.getItemById(id);
 
-        if (!venta) {
+        if (!found) {
             throw new Error('Venta no encontrada');
         }
 
@@ -85,18 +76,20 @@ class VentasService {
             throw new Error('Producto no encontrado');
         }
 
-        if (producto.cantidad < 0) {
-            throw new Error('No hay suficientes existencias');
-        }
-        if (producto.cantidad - data.cantidad < 0) {
+        if (producto.cantidad < data.cantidad) {
             throw new Error('No hay suficientes existencias');
         }
 
-        // const diferencia = data.cantidad - venta.cantidad;
-        // const nuevaCantidad = producto.cantidad - diferencia;
-        // await this.productosService.updateItem(producto.id, {cantidad: nuevaCantidad});
+        const cantidadAnterior = found.cantidad;
 
-        return this.ventasRepository.updateItem(id, data);
+        const updatedVenta = this.ventasRepository.updateItem(id, data);
+
+        // Publicar el evento de creación de venta en NATS
+        const payload = { ventaId: updatedVenta.id, productoId: data.producto_id, cantidad: data.cantidad, precio: data.precio, cantidadAnterior };
+        console.log('payload', payload)
+        this.nats.publish('venta.updated', JSON.stringify(payload));
+
+        return updatedVenta;
     }
 
     async deleteItem(id) {

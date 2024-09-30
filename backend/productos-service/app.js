@@ -34,6 +34,7 @@ const servicesPlugin = require('./plugins/services-plugin');
 const productosRouter = require('./productos/productos-router');
 // const ventasRouter = require('./ventas/ventas-router');
 // const personasRouter = require('./personas/personas-router');
+const productosNatsListener = require('./productos/productos-nats-listener');
 
 
 // Configurar CORS
@@ -71,6 +72,8 @@ app.get('/api/force-error', async (request, reply) => {
 app.register(productosRouter, { prefix: '/api/productos' });
 // app.register(ventasRouter, { prefix: '/api/ventas' });
 // app.register(personasRouter, { prefix: '/api/personas' });
+
+app.register(productosNatsListener);
 
 app.addHook('onReady', () => {
     const sequelize = app.sequelize;

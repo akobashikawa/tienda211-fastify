@@ -12,7 +12,7 @@ async function servicesPlugin(fastify, options) {
     const productosService = new ProductosService({ fastify, url: PRODUCTOS_SERVICE_URL });
     // const personasService = new PersonasService({...fastify.repositories});
     const personasService = new PersonasService({ fastify, url: PERSONAS_SERVICE_URL });
-    const ventasService = new VentasService({...fastify.repositories, productosService, personasService});
+    const ventasService = new VentasService({fastify, ...fastify.repositories, productosService, personasService});
 
     const services = {
         productosService,

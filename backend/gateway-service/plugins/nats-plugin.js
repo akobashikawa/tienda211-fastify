@@ -1,7 +1,6 @@
 const fp = require('fastify-plugin');
 const { connect, StringCodec } = require('nats');
 
-
 async function natsPlugin(fastify, options) {
 
     const sc = StringCodec();
@@ -18,6 +17,7 @@ async function natsPlugin(fastify, options) {
         }
     };
 
+    // Método para publicar y esperar respuesta
     const getSingleResponse = async function ({ subject, data = '', timeout = 5000 }) {
         let nc = this.nc;
         if (!nc) {
@@ -27,7 +27,6 @@ async function natsPlugin(fastify, options) {
             }
             nc = this.nc;
         }
-        const sc = this.sc;
 
         const responseSubject = `${subject}.response`;
 
@@ -37,7 +36,7 @@ async function natsPlugin(fastify, options) {
             const responsePromise = new Promise((resolve, reject) => {
                 // Publicar el mensaje en NATS
                 fastify.log.info(`Publishing message to ${subject} with reply subject ${responseSubject}`);
-                nc.publish(subject, data, { reply: responseSubject });
+                nc.publish(subject, sc.encode(data), { reply: responseSubject });
 
                 // Suscripción para recibir la respuesta
                 fastify.log.info(`Creating subscription for ${responseSubject}`);
@@ -59,7 +58,6 @@ async function natsPlugin(fastify, options) {
                         }
                     },
                 });
-
             });
 
             const timeoutPromise = new Promise((_, reject) =>
@@ -72,24 +70,56 @@ async function natsPlugin(fastify, options) {
             return await Promise.race([responsePromise, timeoutPromise]);
 
         } finally {
-            // Log cuando se cierra la suscripción
-            // if (subscription) {
-            //     fastify.log.info(`Unsubscribing from ${responseSubject}`);
-            //     subscription.unsubscribe();
-            // }
+            if (subscription) {
+                subscription.unsubscribe();
+            }
         }
-    }
+    };
 
-    
+    // Método para publicar sin esperar respuesta
+    const publish = function (subject, data) {
+        let nc = this.nc;
+        if (!nc) {
+            throw new Error('NATS connection not ready');
+        }
+        nc.publish(subject, sc.encode(data));
+        fastify.log.info(`Published message to ${subject}`);
+        console.log(data);
+    };
+
+    // Método para suscribirse a un tema
+    const subscribe = function (subject, handler) {
+        let nc = this.nc;
+        if (!nc) {
+            throw new Error('NATS connection not ready');
+        }
+
+        const subscription = nc.subscribe(subject, {
+            callback: (err, msg) => {
+                if (err) {
+                    fastify.log.error(`Error in subscription to ${subject}: ${err.message}`);
+                    return;
+                }
+                const message = sc.decode(msg.data);
+                fastify.log.info(`Received message from ${subject}`);
+                handler(message); // Ejecutar el handler proporcionado por el usuario
+            },
+        });
+
+        fastify.log.info(`Subscribed to ${subject}`);
+        return subscription;
+    };
+
     fastify.decorate('nats', {
         nc: null,
         sc: sc,
         connect: natsConnect,
         getSingleResponse: getSingleResponse,
+        publish: publish,       // Agregar método para publicar
+        subscribe: subscribe,   // Agregar método para suscribirse
     });
-    
-    fastify.nats.nc = await fastify.nats.connect();
 
+    fastify.nats.nc = await fastify.nats.connect();
 
     fastify.addHook('onClose', (fastifyInstance, done) => {
         fastifyInstance.nats.nc.close();
