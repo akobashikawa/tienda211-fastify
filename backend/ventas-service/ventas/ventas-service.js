@@ -95,24 +95,6 @@ class VentasService {
         return this.ventasRepository.deleteItem(id);
     }
 
-    // Solicitar verificación de persona a través de NATS
-    // async requestPerson(persona_id) {
-    //     return await this.getSingleResponse({
-    //         subject: 'persona.verify',
-    //         data: JSON.stringify({ persona_id }),
-    //         timeout: 5000 // Timeout de 5 segundos
-    //     });
-    // }
-
-    // Solicitar verificación de producto y stock a través de NATS
-    // async requestProduct(producto_id, cantidad) {
-    //     return await this.getSingleResponse({
-    //         subject: 'producto.verify',
-    //         data: JSON.stringify({ producto_id, cantidad }),
-    //         timeout: 5000 // Timeout de 5 segundos
-    //     });
-    // }
-
 }
 
 module.exports = VentasService;
