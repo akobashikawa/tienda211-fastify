@@ -1,4 +1,6 @@
-# Tienda 401 - Fastify
+# Tienda 211 - Fastify
+
+- Basado en [akobashikawa/tienda401-fastify: Ejercicio de implementar una tienda. Fastify con BDD. Arquitectura hexagonal. Microservicios con Gateway y NATS.](https://github.com/akobashikawa/tienda401-fastify)
 
 ## **Tienda 101 - Fastify**
 - Es la versión monolito
