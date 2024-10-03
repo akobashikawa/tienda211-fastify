@@ -86,7 +86,6 @@ class VentasService {
 
         // Publicar el evento de creación de venta en NATS
         const payload = { ventaId: updatedVenta.id, productoId: data.producto_id, cantidad: data.cantidad, precio: data.precio, cantidadAnterior };
-        console.log('payload', payload)
         this.nats.publish('venta.updated', JSON.stringify(payload));
 
         return updatedVenta;
