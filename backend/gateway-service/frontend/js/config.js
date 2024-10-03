@@ -1,5 +1,5 @@
 const config = {
-  apiBaseUrl: 'http://localhost:8080',
+  apiBaseUrl: 'http://localhost:3000',
   socketBaseUrl: 'http://localhost:3030',
 };
 
