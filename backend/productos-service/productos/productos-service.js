@@ -1,7 +1,8 @@
 class ProductosService {
 
-    constructor({ productosRepository }) {
+    constructor({ fastify, productosRepository }) {
         this.productosRepository = productosRepository;
+        this.nats = fastify.nats;
     }
 
     ping() {
@@ -17,11 +18,23 @@ class ProductosService {
     }
 
     async createItem(data) {
-        return this.productosRepository.createItem(data);
+        const newItem = await this.productosRepository.createItem(data);
+
+        // Publicar el evento en NATS
+        const payload = { productoId: newItem.id };
+        this.nats.publish('producto.created', JSON.stringify(payload));
+
+        return newItem;
     }
 
     async updateItem(id, data) {
-        return this.productosRepository.updateItem(id, data);
+        const updatedItem = await this.productosRepository.updateItem(id, data);
+
+        // Publicar el evento en NATS
+        const payload = { productoId: updatedItem.id };
+        this.nats.publish('producto.updated', JSON.stringify(payload));
+
+        return updatedItem;
     }
 
     async deleteItem(id) {

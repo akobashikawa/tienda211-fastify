@@ -5,7 +5,7 @@ const ProductosService = require('../productos/productos-service');
 
 async function servicesPlugin(fastify, options) {
 
-    const productosService = new ProductosService({...fastify.repositories});
+    const productosService = new ProductosService({ fastify, ...fastify.repositories});
     // const personasService = new PersonasService({...fastify.repositories});
     // const ventasService = new VentasService({...fastify.repositories, productosService, personasService});
 
