@@ -38,17 +38,17 @@ class Venta extends Model {
         });
     }
 
-    toJSON() {
-        const values = super.toJSON();
-        return {
-            id: values.id,
-            producto: values.Producto,
-            persona: values.Persona,
-            precio: values.precio,
-            cantidad: values.cantidad,
-            fecha: values.fecha
-        };
-    }
+    // toJSON() {
+    //     const values = super.toJSON();
+    //     return {
+    //         id: values.id,
+    //         producto: values.Producto,
+    //         persona: values.Persona,
+    //         precio: values.precio,
+    //         cantidad: values.cantidad,
+    //         fecha_hora: values.fecha_hora
+    //     };
+    // }
 }
 
 module.exports = Venta;

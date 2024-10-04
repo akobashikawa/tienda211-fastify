@@ -191,10 +191,10 @@ const App = {
 				<tbody>
 					<tr v-for="venta of ventas">
 						<td>{{ venta.id }}</td>
-						<td>{{ formatDate(venta.fechaHora) }}</td>
-						<td>{{ venta.persona.nombre }}</td>
-						<td>{{ venta.producto.nombre }}</td>
-						<td>{{ venta.producto.costo }}</td>
+						<td>{{ formatDate(venta.fecha_hora) }}</td>
+						<td>{{ venta.Persona.nombre }}</td>
+						<td>{{ venta.Producto.nombre }}</td>
+						<td>{{ venta.Producto.costo }}</td>
 						<td>{{ venta.precio }}</td>
 						<td>{{ venta.cantidad }}</td>
 						<td>
